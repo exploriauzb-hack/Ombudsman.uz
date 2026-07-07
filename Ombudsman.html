@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ombudsman to'g'risidagi Qonun — o'quv sayti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12332B;
+    --ink-soft:#3E5850;
+    --ink-faint:#6C8079;
+    --paper:#F4F6F0;
+    --paper-alt:#EAEEE1;
+    --card:#FFFFFF;
+    --line:#D9DECB;
+    --brass:#B08D57;
+    --brass-dark:#8A6B3D;
+    --brass-light:#F1E6CE;
+    --warn:#8C3A2E;
+    --warn-bg:#F6E7E1;
+    --good:#2F6B4F;
+    --good-bg:#E4EFE6;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(18,51,43,0.06), 0 8px 24px rgba(18,51,43,0.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Source Serif 4',serif; font-weight:600; color:var(--ink); margin:0;}
+  .tag{font-family:'IBM Plex Mono',monospace; font-weight:600; letter-spacing:0.02em;}
+  a{color:inherit;}
+
+  /* ---------- Layout shell ---------- */
+  .shell{display:flex; min-height:100vh;}
+  .sidebar{
+    width:260px; flex-shrink:0; position:sticky; top:0; align-self:flex-start;
+    height:100vh; overflow-y:auto; padding:32px 20px;
+    border-right:1px solid var(--line);
+    background:var(--paper-alt);
+  }
+  .sidebar-brand{display:flex; align-items:center; gap:10px; margin-bottom:28px;}
+  .seal-mini{
+    width:34px; height:34px; border-radius:50%; border:1.5px dashed var(--brass-dark);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    color:var(--brass-dark); font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600;
+  }
+  .sidebar-brand div{font-size:13px; color:var(--ink-soft); line-height:1.3;}
+  .sidebar-brand strong{display:block; color:var(--ink); font-size:14px;}
+
+  .progress-wrap{margin-bottom:24px;}
+  .progress-track{height:6px; background:var(--card); border:1px solid var(--line); border-radius:4px; overflow:hidden;}
+  .progress-fill{height:100%; width:0%; background:var(--brass); transition:width .3s;}
+  .progress-label{font-size:11.5px; color:var(--ink-faint); margin-top:6px; font-family:'IBM Plex Mono',monospace;}
+
+  nav.side-nav{display:flex; flex-direction:column; gap:2px;}
+  nav.side-nav a{
+    display:flex; align-items:center; gap:10px;
+    padding:9px 12px; border-radius:8px; font-size:14px; color:var(--ink-soft);
+    text-decoration:none; transition:background .15s, color .15s;
+  }
+  nav.side-nav a .num{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--brass-dark);
+    width:20px; flex-shrink:0;
+  }
+  nav.side-nav a:hover{background:var(--card); color:var(--ink);}
+  nav.side-nav a.active{background:var(--card); color:var(--ink); font-weight:600; box-shadow:var(--shadow);}
+  nav.side-nav a .dot{
+    margin-left:auto; width:7px; height:7px; border-radius:50%; border:1.5px solid var(--line); flex-shrink:0;
+  }
+  nav.side-nav a.done .dot{background:var(--good); border-color:var(--good);}
+
+  .main{flex:1; min-width:0;}
+
+  /* ---------- Mobile top bar ---------- */
+  .topbar{
+    display:none; position:sticky; top:0; z-index:50;
+    background:var(--paper-alt); border-bottom:1px solid var(--line);
+    padding:14px 18px; align-items:center; justify-content:space-between;
+  }
+  .topbar strong{font-family:'Source Serif 4',serif; font-size:16px;}
+  .burger{
+    width:38px; height:38px; border-radius:8px; border:1px solid var(--line); background:var(--card);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .burger span, .burger span::before, .burger span::after{
+    content:''; display:block; width:16px; height:2px; background:var(--ink); position:relative;
+  }
+  .burger span::before{position:absolute; top:-5px;}
+  .burger span::after{position:absolute; top:5px;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:88px 64px 64px; max-width:900px;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.06em;
+    color:var(--brass-dark); text-transform:uppercase; margin-bottom:18px;
+  }
+  .eyebrow::before{content:''; width:22px; height:1px; background:var(--brass-dark); display:inline-block;}
+  .hero h1{font-size:44px; line-height:1.15; max-width:760px;}
+  .hero p.lead{font-size:17px; color:var(--ink-soft); max-width:600px; margin-top:18px;}
+  .hero-stats{display:flex; flex-wrap:wrap; gap:14px; margin-top:36px;}
+  .hero-stat{
+    border:1px solid var(--line); background:var(--card); border-radius:var(--radius);
+    padding:14px 18px; min-width:120px;
+  }
+  .hero-stat .n{font-family:'Source Serif 4',serif; font-size:26px; color:var(--ink);}
+  .hero-stat .l{font-size:12px; color:var(--ink-faint); margin-top:2px;}
+
+  /* ---------- Sections ---------- */
+  section.chapter{padding:56px 64px; max-width:900px; border-bottom:1px solid var(--line);}
+  section.chapter:last-of-type{border-bottom:none;}
+  .chapter-head{display:flex; align-items:baseline; gap:14px; margin-bottom:8px;}
+  .chapter-head .tag{color:var(--brass-dark); font-size:13px;}
+  .chapter-head h2{font-size:28px;}
+  .chapter-sub{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; color:var(--ink-faint); font-size:14px; margin-bottom:28px;}
+
+  .mark-btn{
+    display:inline-flex; align-items:center; gap:7px; font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600;
+    color:var(--ink-soft); background:var(--card); border:1px solid var(--line); border-radius:20px;
+    padding:6px 13px; cursor:pointer; transition:.15s; white-space:nowrap;
+  }
+  .mark-btn:hover{border-color:var(--brass-dark);}
+  .mark-btn .dotc{width:8px; height:8px; border-radius:50%; border:1.5px solid var(--ink-faint); flex-shrink:0;}
+  .mark-btn.done{background:var(--good-bg); border-color:var(--good); color:var(--good);}
+  .mark-btn.done .dotc{background:var(--good); border-color:var(--good);}
+
+  /* ---------- Practice simulator ---------- */
+  .practice-card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px; max-width:680px; box-shadow:var(--shadow);}
+  .scenario-row{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px;}
+  .scenario-btn{
+    font-family:'Inter',sans-serif; font-size:13.5px; font-weight:500; color:var(--ink-soft);
+    background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:10px 14px; cursor:pointer; transition:.15s;
+  }
+  .scenario-btn:hover{border-color:var(--brass-dark);}
+  .scenario-btn.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  .form-field{margin-bottom:16px;}
+  .form-field label{display:block; font-size:13px; font-weight:600; color:var(--ink); margin-bottom:6px;}
+  .form-field input, .form-field textarea{
+    width:100%; font-family:'Inter',sans-serif; font-size:14px; color:var(--ink);
+    border:1px solid var(--line); border-radius:8px; padding:10px 12px; background:var(--paper);
+  }
+  .form-field textarea{resize:vertical; min-height:70px;}
+  .result-box{
+    margin-top:20px; background:var(--ink); color:var(--paper); border-radius:12px; padding:20px 22px;
+    font-family:'IBM Plex Mono',monospace; font-size:13px; line-height:1.7; white-space:pre-wrap; display:none;
+  }
+  .result-box .rb-title{font-family:'Inter',sans-serif; font-weight:700; color:var(--brass); font-size:12px; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px;}
+  .practice-note{font-size:13px; color:var(--ink-faint); margin-top:14px; max-width:600px;}
+
+  .block{margin-bottom:34px;}
+  .block h3{font-size:17px; margin-bottom:10px; color:var(--ink);}
+  .block p{font-size:15px; color:var(--ink-soft); max-width:680px; margin:0 0 10px;}
+
+  .callout{
+    display:flex; gap:12px; background:var(--card); border:1px solid var(--line);
+    border-left:3px solid var(--brass); border-radius:10px; padding:16px 18px; margin:14px 0;
+    font-size:14.5px; color:var(--ink-soft); max-width:680px;
+  }
+  .callout b{color:var(--ink);}
+  .callout.warn{border-left-color:var(--warn); background:var(--warn-bg);}
+  .callout.warn b{color:var(--warn);}
+
+  table.factbox{
+    width:100%; max-width:680px; border-collapse:collapse; margin:16px 0;
+    background:var(--card); border-radius:10px; overflow:hidden; border:1px solid var(--line);
+    font-size:14px;
+  }
+  table.factbox th{
+    background:var(--ink); color:var(--paper); text-align:left; padding:10px 14px;
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.03em;
+  }
+  table.factbox td{padding:11px 14px; border-top:1px solid var(--line); vertical-align:top;}
+  table.factbox tr td:first-child{font-weight:600; color:var(--ink); width:34%;}
+
+  ol.steps, ul.plain{max-width:680px; padding-left:22px; font-size:14.5px; color:var(--ink-soft);}
+  ol.steps li, ul.plain li{margin-bottom:8px;}
+  ol.steps li::marker{color:var(--brass-dark); font-family:'IBM Plex Mono',monospace; font-weight:600;}
+
+  /* ---------- Seal / flashcard grid ---------- */
+  .seal-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:16px; max-width:900px;}
+  .seal-card{
+    perspective:1000px; height:140px; cursor:pointer;
+  }
+  .seal-inner{
+    position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d;
+  }
+  .seal-card.flipped .seal-inner{transform:rotateY(180deg);}
+  .seal-face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:14px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:10px;
+    border:1.5px dashed var(--brass-dark); background:var(--card);
+  }
+  .seal-face.front .num{font-family:'Source Serif 4',serif; font-size:28px; color:var(--ink);}
+  .seal-face.front .lbl{font-size:11.5px; color:var(--ink-faint); margin-top:4px;}
+  .seal-face.back{transform:rotateY(180deg); background:var(--ink); color:var(--paper); border-style:solid; border-color:var(--brass);}
+  .seal-face.back .lbl{font-size:12px; line-height:1.4;}
+  .seal-hint{font-size:11px; color:var(--ink-faint); text-align:center; margin-top:6px;}
+
+  /* ---------- Quiz ---------- */
+  .quiz-wrap{max-width:680px;}
+  .quiz-progress{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; font-size:13px; color:var(--ink-faint);}
+  .quiz-progress .score{font-family:'IBM Plex Mono',monospace; color:var(--ink);}
+  .quiz-bar{height:4px; background:var(--line); border-radius:2px; overflow:hidden; margin-bottom:24px;}
+  .quiz-bar-fill{height:100%; background:var(--brass); width:0%; transition:width .3s;}
+  .quiz-card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px; box-shadow:var(--shadow);}
+  .quiz-q{font-family:'Source Serif 4',serif; font-size:19px; margin-bottom:18px; line-height:1.4;}
+  .quiz-opt{
+    display:block; width:100%; text-align:left; padding:13px 16px; margin-bottom:10px;
+    border:1px solid var(--line); border-radius:10px; background:var(--paper);
+    font-family:'Inter',sans-serif; font-size:14.5px; color:var(--ink); cursor:pointer; transition:.15s;
+  }
+  .quiz-opt:hover{border-color:var(--brass-dark);}
+  .quiz-opt.correct{background:var(--good-bg); border-color:var(--good); color:var(--good); font-weight:600;}
+  .quiz-opt.wrong{background:var(--warn-bg); border-color:var(--warn); color:var(--warn); font-weight:600;}
+  .quiz-opt[disabled]{cursor:default;}
+  .quiz-explain{margin-top:14px; font-size:14px; color:var(--ink-soft); background:var(--paper-alt); padding:12px 14px; border-radius:10px; display:none;}
+  .quiz-nextbar{display:flex; justify-content:flex-end; margin-top:18px;}
+  .btn{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:14px; color:var(--paper);
+    background:var(--ink); border:none; padding:11px 22px; border-radius:8px; cursor:pointer;
+  }
+  .btn:hover{background:var(--ink-soft);}
+  .quiz-done{text-align:center; padding:40px 20px;}
+  .quiz-done .n{font-family:'Source Serif 4',serif; font-size:52px; color:var(--ink);}
+
+  footer{padding:40px 64px 60px; max-width:900px; font-size:13px; color:var(--ink-faint);}
+
+  @media (max-width:860px){
+    .sidebar{display:none;}
+    .sidebar.open{
+      display:block; position:fixed; z-index:60; inset:0 20% 0 0; width:auto; height:100vh;
+      box-shadow:0 0 0 2000px rgba(18,51,43,0.35);
+    }
+    .topbar{display:flex;}
+    .hero{padding:40px 22px 40px;}
+    .hero h1{font-size:30px;}
+    section.chapter{padding:36px 22px;}
+    .chapter-head h2{font-size:22px;}
+    footer{padding:30px 22px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <strong>Ombudsman Qonuni</strong>
+  <div class="burger" id="burgerBtn" onclick="toggleSidebar()"><span></span></div>
+</div>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="seal-mini">IO</div>
+      <div><strong>Ombudsman Qonuni</strong>O'quv sayti</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">0% o'rganildi</div>
+    </div>
+    <nav class="side-nav" id="sideNav">
+      <a href="#hero" class="num">◆</a>
+      <a href="#umumiy" data-track="umumiy"><span class="num">01</span>Umumiy qoidalar<span class="dot"></span></a>
+      <a href="#vazifa" data-track="vazifa"><span class="num">02</span>Vazifa, huquq, kafolat<span class="dot"></span></a>
+      <a href="#murojaat" data-track="murojaat"><span class="num">03</span>Murojaatlar tartibi<span class="dot"></span></a>
+      <a href="#tasir" data-track="tasir"><span class="num">04</span>Ta'sir choralari<span class="dot"></span></a>
+      <a href="#tuzilma" data-track="tuzilma"><span class="num">05</span>Hamkorlik, tuzilma<span class="dot"></span></a>
+      <a href="#amaliy" data-track="amaliy"><span class="num">06</span>Amaliy mashq<span class="dot"></span></a>
+      <a href="#raqamlar" data-track="raqamlar"><span class="num">◆</span>Raqamli muhrlar<span class="dot"></span></a>
+      <a href="#test" data-track="test"><span class="num">◆</span>Bilimni sinash<span class="dot"></span></a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <section class="hero" id="hero">
+      <div class="eyebrow">Qonun o'quv qo'llanmasi</div>
+      <h1>"Inson huquqlari bo'yicha vakil (Ombudsman) to'g'risida"gi Qonun</h1>
+      <p class="lead">Testlarda eng ko'p chalkashtiriladigan raqamlar, muddatlar va tushunchalarni tartibga solingan holda o'rganing. Har bir bo'lim qisqa, aniq va misollar bilan.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="n">30</div><div class="l">yosh talabi</div></div>
+        <div class="hero-stat"><div class="n">5</div><div class="l">yil vakolat muddati</div></div>
+        <div class="hero-stat"><div class="n">4</div><div class="l">ta'sir chorasi turi</div></div>
+        <div class="hero-stat"><div class="n">1</div><div class="l">yil shikoyat muddati</div></div>
+      </div>
+    </section>
+
+    <section class="chapter" id="umumiy">
+      <div class="chapter-head"><span class="tag">01</span><h2>Umumiy qoidalar</h2></div>
+      <div class="chapter-sub"><span>1–9-moddalar</span><button class="mark-btn" onclick="toggleRead('umumiy',this)"><span class="dotc"></span>O'qidim deb belgilash</button></div>
+
+      <div class="block">
+        <h3>Ombudsman kim?</h3>
+        <p>Ombudsman — mansabdor shaxs va inson huquqlari bo'yicha milliy institut. Uning asosiy vazifasi — davlat organlari, huquqni muhofaza qiluvchi va nazorat qiluvchi organlar ustidan <b>parlament nazoratini</b> amalga oshirish. Faoliyatini tashkilotlardan mustaqil, faqat qonunga bo'ysungan holda yuritadi.</p>
+        <table class="factbox">
+          <tr><th>Belgi</th><th>Tavsif</th></tr>
+          <tr><td>Maqom</td><td>Mansabdor shaxs; milliy institut</td></tr>
+          <tr><td>Mustaqillik</td><td>Faqat qonunga bo'ysunadi</td></tr>
+          <tr><td>Vakolat hujjati</td><td>Spiker va Senat Raisi imzolagan guvohnoma</td></tr>
+        </table>
+      </div>
+
+      <div class="block">
+        <h3>Huquqiy asos tartibi (kuchi bo'yicha)</h3>
+        <ol class="steps">
+          <li>Konstitutsiya — oliy yuridik kuch</li>
+          <li>Ushbu Qonun — maxsus qonun</li>
+          <li>Boshqa qonunchilik</li>
+          <li>Xalqaro shartnomalar</li>
+        </ol>
+        <p><b>Prinsiplar:</b> Qonuniylik, Adolat, Demokratizm, Oshkoralik, Mustaqillik.</p>
+      </div>
+
+      <div class="block">
+        <h3>Nomzodga talablar</h3>
+        <table class="factbox">
+          <tr><th>Talab</th><th>Mezon</th></tr>
+          <tr><td>Fuqarolik</td><td>O'zbekiston Respublikasi fuqarosi</td></tr>
+          <tr><td>Yosh</td><td>Saylanish kunida 30 yoshga to'lgan</td></tr>
+          <tr><td>Yashash muddati</td><td>Kamida 5 yil O'zbekistonda muqim yashagan</td></tr>
+        </table>
+      </div>
+
+      <div class="block">
+        <h3>Saylash tartibi</h3>
+        <ol class="steps">
+          <li>Prezident nomzodni palatalar ko'rib chiqishi uchun kiritadi</li>
+          <li>Har bir palata (Qonunchilik palatasi + Senat) o'z tarkibining ko'pchilik ovozi bilan qaror qabul qiladi</li>
+          <li>Ombudsman <b>5 yil</b> muddatga saylanadi</li>
+          <li>Bir shaxs ketma-ket <b>2 martadan ortiq</b> saylanolmaydi</li>
+        </ol>
+        <div class="callout warn"><div><b>Diqqat:</b> Prezident nomzodni faqat KIRITADI, saylashni palatalar amalga oshiradi — bu ikkisini aralashtirmang.</div></div>
+      </div>
+
+      <div class="block">
+        <h3>Lavozimdan muddatidan ilgari ozod etish asoslari</h3>
+        <ul class="plain">
+          <li>Shaxsning o'zi bilan bog'liq: ariza berish, sog'lig'i buzilishi, vafot etish</li>
+          <li>Sud bilan bog'liq: ayblov hukmi, layoqatsiz deb topilish, bedarak yo'qolgan/vafot etgan deb e'lon qilinish</li>
+          <li>Huquqiy holat bilan bog'liq: nomuvofiq lavozimga saylanish, fuqarolikni yo'qotish</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="chapter" id="vazifa">
+      <div class="chapter-head"><span class="tag">02</span><h2>Vazifa, huquq, majburiyat va kafolatlar</h2></div>
+      <div class="chapter-sub"><span>10–18-moddalar</span><button class="mark-btn" onclick="toggleRead('vazifa',this)"><span class="dotc"></span>O'qidim deb belgilash</button></div>
+
+      <div class="block">
+        <h3>Asosiy vazifalar (qisqacha)</h3>
+        <ul class="plain">
+          <li>Inson huquqlariga oid davlat siyosatida ishtirok etish</li>
+          <li>Parlament nazoratini amalga oshirish</li>
+          <li>Murojaatlarni ko'rib chiqish</li>
+          <li>Qiynoqqa solishning oldini olish choralarini ko'rish</li>
+          <li>Huquqiy ong va madaniyatni oshirishga ko'maklashish</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h3>Daxlsizlik huquqi — eng ko'p chalkashtiriladigan modda</h3>
+        <p>Ombudsman Oliy Majlis palatalarining roziligisiz jinoiy javobgarlikka tortilishi, ushlab turilishi yoki qamoqqa olinishi mumkin emas.</p>
+        <div class="callout"><div><b>Muhim:</b> Jinoyat ishi faqat va faqat <b>Bosh prokuror</b> tomonidan qo'zg'atilishi mumkin — Prezident yoki sud emas.</div></div>
+      </div>
+
+      <div class="block">
+        <h3>Muhim huquqlar</h3>
+        <ul class="plain">
+          <li>Tashkilotlarga va mansabdor shaxslar huzuriga moneliksiz kirish</li>
+          <li>Hujjat va ma'lumot so'rash hamda olish</li>
+          <li>Yozma ogohlantirish yuborish</li>
+          <li>Sudlarga murojaat qilish (davlat boji to'lashdan ozod)</li>
+        </ul>
+      </div>
+
+      <div class="block">
+        <h3>Majburiyat: aralashmaslik</h3>
+        <div class="callout warn"><div><b>Eslang:</b> Ombudsman tashkilotlar va mansabdor shaxslarning o'z vakolatlari doirasidagi faoliyatiga ARALASHMASLIGI shart.</div></div>
+      </div>
+
+      <div class="block">
+        <h3>Ma'ruzalar tizimi</h3>
+        <table class="factbox">
+          <tr><th>Turi</th><th>Kimga yuboriladi</th></tr>
+          <tr><td>Yillik ma'ruza</td><td>Oliy Majlis palatalari (15-fevralgacha)</td></tr>
+          <tr><td>Maxsus ma'ruza</td><td>Prezident, palatalar, Vazirlar Mahkamasi</td></tr>
+          <tr><td>Muqobil ma'ruza</td><td>Tegishli xalqaro tashkilotlar</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section class="chapter" id="murojaat">
+      <div class="chapter-head"><span class="tag">03</span><h2>Murojaatlarni ko'rib chiqish tartibi</h2></div>
+      <div class="chapter-sub"><span>19–27-moddalar</span><button class="mark-btn" onclick="toggleRead('murojaat',this)"><span class="dotc"></span>O'qidim deb belgilash</button></div>
+
+      <div class="block">
+        <h3>Murojaat turlari</h3>
+        <p>Arizalar, takliflar va shikoyatlar. Shikoyat berish muddati — <b>1 yil</b>, huquqlar buzilganligi ma'lum bo'lgan paytdan boshlanadi.</p>
+      </div>
+
+      <div class="block">
+        <h3>Ko'rib chiqilmaydigan murojaatlar</h3>
+        <div class="callout warn"><div>
+          <b>Uchtasini yodda tuting:</b> sud vakolatiga kiradigan masalalar, jismoniy shaxslarning boshqa jismoniy shaxslarga oid murojaatlari va <b>anonim murojaatlar</b>.
+        </div></div>
+      </div>
+
+      <div class="block">
+        <h3>Xulosa</h3>
+        <table class="factbox">
+          <tr><th>Belgi</th><th>Tavsif</th></tr>
+          <tr><td>Yuboriladi</td><td>Huquqbuzarlik aniqlangan tashkilot/mansabdor shaxsga</td></tr>
+          <tr><td>Javob muddati</td><td>1 oydan kechiktirmay</td></tr>
+          <tr><td>Javob shakli</td><td>Asoslantirilgan javob</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section class="chapter" id="tasir">
+      <div class="chapter-head"><span class="tag">04</span><h2>Ta'sir choralari — 4 turi</h2></div>
+      <div class="chapter-sub"><span>28–32-moddalar — eng ko'p test savoli beriladigan mavzu</span><button class="mark-btn" onclick="toggleRead('tasir',this)"><span class="dotc"></span>O'qidim deb belgilash</button></div>
+
+      <table class="factbox" style="max-width:100%;">
+        <tr><th>Chora</th><th>Kimga</th><th>Nima haqida</th><th>Muddat</th></tr>
+        <tr><td>Ogohlantirish</td><td>Tashkilot, mansabdor shaxs</td><td>Qonunbuzilishning oldini olish</td><td>Yozma</td></tr>
+        <tr><td>Taqdimnoma</td><td>Tashkilot rahbari</td><td>Buzilish sabablarini bartaraf etish</td><td>15 kun</td></tr>
+        <tr><td>Iltimosnoma</td><td>Tashkilot</td><td>Huquqbuzarni javobgarlikka tortish</td><td>—</td></tr>
+        <tr><td>Talabnoma</td><td>Tegishli tashkilot</td><td>Qiynoqqa solishni bartaraf etish</td><td>10 kun</td></tr>
+      </table>
+      <div class="callout"><div><b>Eslab qoling:</b> faqat Taqdimnoma va Talabnoma ko'rib chiqilishi MAJBURIY. Talabnoma faqat qiynoqqa solish hollari bo'yicha va monitoring tashriflari asosida beriladi.</div></div>
+    </section>
+
+    <section class="chapter" id="tuzilma">
+      <div class="chapter-head"><span class="tag">05</span><h2>Hamkorlik va tashkiliy tuzilma</h2></div>
+      <div class="chapter-sub"><span>36–51-moddalar</span><button class="mark-btn" onclick="toggleRead('tuzilma',this)"><span class="dotc"></span>O'qidim deb belgilash</button></div>
+      <div class="block">
+        <ul class="plain">
+          <li>Konstitutsiyaviy sudga murojaat qilish huquqiga ega</li>
+          <li>Oliy sud Plenumi majlislarida ishtirok etadi</li>
+          <li>Milliy institutlar: Bolalar ombudsmani, Tadbirkorlik vakili, Inson huquqlari bo'yicha Milliy markaz</li>
+          <li>Ombudsman Devoni — davlat muassasasi shaklidagi yuridik shaxs, davlat byudjetidan moliyalashadi</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="chapter" id="amaliy">
+      <div class="chapter-head"><span class="tag">06</span><h2>Amaliy mashq — ariza/shikoyat namunasi</h2></div>
+      <div class="chapter-sub"><span>Vaziyatni tanlang va namuna matnini ko'ring</span><button class="mark-btn" onclick="toggleRead('amaliy',this)"><span class="dotc"></span>O'qidim deb belgilash</button></div>
+
+      <div class="practice-card">
+        <div class="form-field">
+          <label>1. Vaziyatni tanlang</label>
+          <div class="scenario-row" id="scenarioRow"></div>
+        </div>
+        <div class="form-field">
+          <label>2. Ismingiz</label>
+          <input type="text" id="pName" placeholder="Masalan: Aliyev Anvar">
+        </div>
+        <div class="form-field">
+          <label>3. Tashkilot yoki mansabdor shaxs nomi</label>
+          <input type="text" id="pOrg" placeholder="Masalan: «Tinchlik» tuman hokimligi">
+        </div>
+        <div class="form-field">
+          <label>4. Voqea qisqacha tavsifi</label>
+          <textarea id="pDesc" placeholder="Nima sodir bo'lgani va qachonligini qisqa yozing"></textarea>
+        </div>
+        <button class="btn" onclick="generateAriza()">Namunani yaratish →</button>
+
+        <div class="result-box" id="resultBox">
+          <div class="rb-title">Yaratilgan namuna</div>
+          <div id="resultText"></div>
+        </div>
+        <p class="practice-note">Bu — faqat qonun tuzilmasini amaliyotda tushunish uchun o'quv namunasi. Haqiqiy shikoyat rasmiy veb-sayt, shaxsiy qabul yoki elektron murojaat orqali yuboriladi va imzo, sana hamda tasdiqlovchi hujjatlar talab qilinadi.</p>
+      </div>
+    </section>
+
+    <section class="chapter" id="raqamlar">
+      <div class="chapter-head"><span class="tag">◆</span><h2>Raqamli muhrlar</h2></div>
+      <div class="chapter-sub"><span>Kartochkaga bosing — orqasida javob chiqadi</span><button class="mark-btn" onclick="toggleRead('raqamlar',this)"><span class="dotc"></span>O'qidim deb belgilash</button></div>
+      <div class="seal-grid" id="sealGrid"></div>
+    </section>
+
+    <section class="chapter" id="test">
+      <div class="chapter-head"><span class="tag">◆</span><h2>Bilimni sinash</h2></div>
+      <div class="chapter-sub">18 ta savol — javobingizni tanlang</div>
+      <div class="quiz-wrap">
+        <div class="quiz-progress"><span id="qCounter">Savol 1 / 18</span><span class="score">Ball: <span id="qScore">0</span></span></div>
+        <div class="quiz-bar"><div class="quiz-bar-fill" id="qBar"></div></div>
+        <div class="quiz-card" id="quizCard"></div>
+      </div>
+    </section>
+
+    <footer>
+      "Inson huquqlari bo'yicha vakil (Ombudsman) to'g'risida"gi Qonun asosida tayyorlangan o'quv materiali.
+    </footer>
+  </main>
+</div>
+
+<script>
+  function toggleSidebar(){
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  // ---------- Progress tracking (in-memory, resets on reload) ----------
+  const trackIds = ['umumiy','vazifa','murojaat','tasir','tuzilma','amaliy','raqamlar','test'];
+  const readState = {};
+  trackIds.forEach(id => readState[id] = false);
+
+  function updateProgress(){
+    const done = trackIds.filter(id => readState[id]).length;
+    const pct = Math.round((done/trackIds.length)*100);
+    document.getElementById('progressFill').style.width = pct+'%';
+    document.getElementById('progressLabel').textContent = pct+"% o'rganildi ("+done+"/"+trackIds.length+")";
+    trackIds.forEach(id=>{
+      const navEl = document.querySelector('.side-nav a[data-track="'+id+'"]');
+      if(navEl) navEl.classList.toggle('done', readState[id]);
+    });
+  }
+
+  function toggleRead(id, btn){
+    readState[id] = !readState[id];
+    if(btn){
+      btn.classList.toggle('done', readState[id]);
+      btn.innerHTML = readState[id]
+        ? '<span class="dotc"></span>O\'qildi ✓'
+        : '<span class="dotc"></span>O\'qidim deb belgilash';
+    }
+    updateProgress();
+  }
+
+  function markDone(id){
+    if(!readState[id]){
+      readState[id] = true;
+      updateProgress();
+    }
+  }
+
+  // ---------- Practice simulator ----------
+  const scenarios = [
+    {
+      key:'ish',
+      label:"Ishdan asossiz bo'shatildim",
+      murojaat:"Shikoyat",
+      talab:"Bo'shatish to'g'risidagi buyruqni bekor qilish va ishga tiklashni so'rayman",
+    },
+    {
+      key:'javob',
+      label:"Davlat organi javob bermadi",
+      murojaat:"Shikoyat",
+      talab:"Murojaatimga qonunda belgilangan muddatda javob berilishini ta'minlashni so'rayman",
+    },
+    {
+      key:'huquq',
+      label:"Boshqa huquqim buzilgan",
+      murojaat:"Ariza",
+      talab:"Buzilgan huquqim va qonuniy manfaatlarimni tiklash yuzasidan choralar ko'rishni so'rayman",
+    },
+  ];
+  let activeScenario = scenarios[0];
+  const scenarioRow = document.getElementById('scenarioRow');
+  scenarios.forEach((s,i)=>{
+    const b = document.createElement('button');
+    b.className = 'scenario-btn' + (i===0 ? ' active' : '');
+    b.textContent = s.label;
+    b.onclick = ()=>{
+      activeScenario = s;
+      document.querySelectorAll('.scenario-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+    };
+    scenarioRow.appendChild(b);
+  });
+
+  function generateAriza(){
+    const name = document.getElementById('pName').value.trim() || "[Ism familiyangiz]";
+    const org = document.getElementById('pOrg').value.trim() || "[Tashkilot yoki mansabdor shaxs nomi]";
+    const desc = document.getElementById('pDesc').value.trim() || "[Voqea qisqacha tavsifi]";
+    const s = activeScenario;
+    const today = new Date().toLocaleDateString('uz-UZ');
+
+    const text =
+`Kimga: O'zbekiston Respublikasi Oliy Majlisining
+Inson huquqlari bo'yicha vakili (Ombudsman)
+
+Kimdan: ${name}
+
+MUROJAAT TURI: ${s.murojaat}
+
+Voqea tavsifi:
+${desc}
+Huquqbuzarlikka aloqador tashkilot/mansabdor shaxs: ${org}
+
+So'rov:
+${s.talab}. Ushbu murojaatimni "Ombudsman to'g'risida"gi Qonunning 19–20-moddalariga muvofiq ko'rib chiqishingizni so'rayman.
+
+Sana: ${today}
+Imzo: _____________
+
+— Eslatma: shikoyat berish muddati huquq buzilganligi ma'lum bo'lgan kundan boshlab 1 yil. Anonim murojaatlar ko'rib chiqilmaydi.`;
+
+    document.getElementById('resultText').textContent = text;
+    document.getElementById('resultBox').style.display = 'block';
+    markDone('amaliy');
+  }
+  document.querySelectorAll('.side-nav a').forEach(a=>{
+    a.addEventListener('click',()=>{
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+
+  // active link highlight
+  const sections = document.querySelectorAll('section.chapter, .hero');
+  const navLinks = document.querySelectorAll('.side-nav a');
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        navLinks.forEach(l=>l.classList.remove('active'));
+        const id = e.target.getAttribute('id');
+        const match = document.querySelector('.side-nav a[href="#'+id+'"]');
+        if(match) match.classList.add('active');
+      }
+    });
+  }, {rootMargin:'-40% 0px -50% 0px'});
+  sections.forEach(s=>obs.observe(s));
+
+  // ---------- Seal flashcards ----------
+  const seals = [
+    {n:"30", l:"yosh", back:"Ombudsmanlikka nomzod bo'lish uchun saylanish kunida shu yoshga to'lgan bo'lishi shart."},
+    {n:"5 yil", l:"yashash muddati", back:"Nomzod kamida shuncha O'zbekiston hududida muqim yashagan bo'lishi kerak."},
+    {n:"5 yil", l:"vakolat muddati", back:"Ombudsman shu muddatga saylanadi."},
+    {n:"2 marta", l:"ketma-ket cheklov", back:"Bir shaxs ketma-ket shundan ortiq saylanolmaydi."},
+    {n:"1 yil", l:"shikoyat muddati", back:"Shikoyat berish uchun ajratilgan asosiy muddat."},
+    {n:"15 kun", l:"taqdimnomaga javob", back:"Tashkilot rahbari taqdimnomaga shu muddatda javob berishi shart."},
+    {n:"10 kun", l:"talabnomaga javob", back:"Talabnoma qiynoqqa solish holatlari bo'yicha beriladi, javob muddati shuncha."},
+    {n:"1 oy", l:"xulosaga javob", back:"Xulosaga asoslantirilgan javob shu muddatdan kechiktirilmasligi kerak."},
+    {n:"15-fevral", l:"yillik ma'ruza", back:"Hisobot yilidan keyingi yilning shu sanasidan kechiktirmay palatalarga taqdim etiladi."},
+    {n:"4 tur", l:"ta'sir choralari", back:"Ogohlantirish, taqdimnoma, iltimosnoma, talabnoma."},
+  ];
+  const grid = document.getElementById('sealGrid');
+  seals.forEach(s=>{
+    const card = document.createElement('div');
+    card.className='seal-card';
+    card.innerHTML = `
+      <div class="seal-inner">
+        <div class="seal-face front"><div class="num">${s.n}</div><div class="lbl">${s.l}</div></div>
+        <div class="seal-face back"><div class="lbl">${s.back}</div></div>
+      </div>`;
+    card.addEventListener('click',()=>card.classList.toggle('flipped'));
+    grid.appendChild(card);
+  });
+
+  // ---------- Quiz ----------
+  const questions = [
+    {q:"Ombudsmanlikka nomzod bo'lish uchun kamida necha yoshda bo'lish kerak?", opts:["25 yosh","30 yosh","35 yosh","40 yosh"], a:1, ex:"5-moddaga ko'ra, nomzod saylanish kunida 30 yoshga to'lgan bo'lishi shart."},
+    {q:"Ombudsman necha yil muddatga saylanadi?", opts:["3 yil","4 yil","5 yil","6 yil"], a:2, ex:"6-moddaga ko'ra, vakolat muddati — 5 yil."},
+    {q:"Bir shaxs ketma-ket necha marta Ombudsman bo'lib saylana oladi?", opts:["1 marta","2 martadan ortiq emas","3 marta","cheklov yo'q"], a:1, ex:"Bir shaxs ketma-ket 2 martadan ortiq saylanishi mumkin emas."},
+    {q:"Ombudsmanga nisbatan jinoyat ishini kim qo'zg'atishi mumkin?", opts:["Prezident","Sud","Bosh prokuror","Ichki ishlar vaziri"], a:2, ex:"11-moddaga ko'ra, jinoyat ishi faqat Bosh prokuror tomonidan qo'zg'atiladi."},
+    {q:"Ombudsmanga shikoyat berish muddati necha yil?", opts:["6 oy","1 yil","2 yil","3 yil"], a:1, ex:"20-moddaga ko'ra, shikoyat muddati — 1 yil."},
+    {q:"Taqdimnomaga javob berish muddati necha kun?", opts:["5 kun","10 kun","15 kun","30 kun"], a:2, ex:"30-moddaga ko'ra, javob muddati 15 kun."},
+    {q:"Talabnomaga javob berish muddati necha kun?", opts:["7 kun","10 kun","15 kun","20 kun"], a:1, ex:"32-moddaga ko'ra, javob muddati 10 kun."},
+    {q:"Xulosaga javob berish muddati qancha?", opts:["15 kun","1 oy","2 oy","3 oy"], a:1, ex:"27-moddaga ko'ra, javob 1 oydan kechiktirilmasligi kerak."},
+    {q:"Yillik ma'ruza qachongacha Oliy Majlis palatalariga taqdim etilishi kerak?", opts:["1-yanvar","15-fevral","1-mart","15-aprel"], a:1, ex:"14-moddaga ko'ra, hisobot yilidan keyingi yilning 15-fevralidan kechiktirmay."},
+    {q:"Talabnoma qanday holatlar bo'yicha beriladi?", opts:["Har qanday huquqbuzarlik","Faqat qiynoqqa solish hollari","Faqat moliyaviy buzilishlar","Faqat kadrlar masalasi"], a:1, ex:"32-moddaga ko'ra, talabnoma qiynoqqa solish hollarini bartaraf etish uchun beriladi."},
+    {q:"Quyidagilardan qaysi biri Ombudsman tomonidan ko'rib chiqilmaydi?", opts:["Yuridik shaxs murojaati","Anonim murojaat","Chet el fuqarosi murojaati","Yozma shikoyat"], a:1, ex:"19-moddaga ko'ra, anonim murojaatlar ko'rib chiqilmaydi."},
+    {q:"Ombudsman o'rinbosarini nomzod sifatida kim kiritadi?", opts:["Prezident","Ombudsmanning o'zi","Bosh prokuror","Adliya vaziri"], a:1, ex:"8-moddaga ko'ra, o'rinbosar nomzodini Ombudsman kiritadi."},
+    {q:"Ombudsmanlikka nomzodni palatalarga kim kiritadi?", opts:["Bosh vazir","Prezident","Adliya vazirligi","Konstitutsiyaviy sud"], a:1, ex:"6-moddaga ko'ra, nomzodni Prezident palatalar ko'rib chiqishi uchun kiritadi."},
+    {q:"Ogohlantirish kimga yuboriladi?", opts:["Faqat jismoniy shaxslarga","Tashkilot va mansabdor shaxslarga","Faqat sudlarga","Faqat Prezidentga"], a:1, ex:"29-moddaga ko'ra, ogohlantirish tashkilotlar va mansabdor shaxslarga yuboriladi."},
+    {q:"Taqdimnoma kimga yuboriladi?", opts:["Oddiy xodimlarga","Tashkilot rahbarlariga","Fuqarolarga","Xalqaro tashkilotlarga"], a:1, ex:"30-moddaga ko'ra, taqdimnoma tashkilot rahbarlariga kiritiladi."},
+    {q:"Huquqiy asos tartibida birinchi o'rinda nima turadi?", opts:["Ushbu Qonun","Xalqaro shartnomalar","Konstitutsiya","Prezident farmoni"], a:2, ex:"3-moddaga ko'ra, Konstitutsiya oliy yuridik kuchga ega."},
+    {q:"Ombudsman Devonining huquqiy maqomi qanday?", opts:["Notijorat tashkilot","Davlat muassasasi shaklidagi yuridik shaxs","Xususiy kompaniya","Jamoat birlashmasi"], a:1, ex:"51-moddaga ko'ra, Devon — davlat muassasasi shaklidagi yuridik shaxs."},
+    {q:"Ombudsman lavozimidan qaysi holatda ozod etilmaydi?", opts:["Ariza berganda","Favqulodda holat joriy etilganda","Fuqarolikni yo'qotganda","Vafot etganda"], a:1, ex:"18-moddaga ko'ra, favqulodda holat joriy etilganda ham Ombudsman faoliyati to'xtatilmaydi."},
+  ];
+
+  let cur = 0, score = 0;
+  const quizCard = document.getElementById('quizCard');
+  const qCounter = document.getElementById('qCounter');
+  const qScore = document.getElementById('qScore');
+  const qBar = document.getElementById('qBar');
+
+  function renderQuestion(){
+    if(cur >= questions.length){
+      quizCard.innerHTML = `<div class="quiz-done">
+        <div class="n">${score}/${questions.length}</div>
+        <p style="color:var(--ink-soft); margin-top:8px;">to'g'ri javob berdingiz</p>
+        <div class="quiz-nextbar" style="justify-content:center; margin-top:22px;">
+          <button class="btn" onclick="restartQuiz()">Qayta boshlash</button>
+        </div>
+      </div>`;
+      qCounter.textContent = `Yakunlandi`;
+      qBar.style.width = '100%';
+      markDone('test');
+      return;
+    }
+    const item = questions[cur];
+    qCounter.textContent = `Savol ${cur+1} / ${questions.length}`;
+    qScore.textContent = score;
+    qBar.style.width = ((cur)/questions.length*100)+'%';
+    quizCard.innerHTML = `
+      <div class="quiz-q">${item.q}</div>
+      <div id="optsWrap"></div>
+      <div class="quiz-explain" id="quizExplain">${item.ex}</div>
+      <div class="quiz-nextbar"><button class="btn" id="nextBtn" style="display:none;" onclick="nextQuestion()">Keyingisi →</button></div>
+    `;
+    const optsWrap = document.getElementById('optsWrap');
+    item.opts.forEach((opt,i)=>{
+      const b = document.createElement('button');
+      b.className='quiz-opt';
+      b.textContent = opt;
+      b.onclick = ()=>selectOption(i);
+      optsWrap.appendChild(b);
+    });
+  }
+
+  function selectOption(i){
+    const item = questions[cur];
+    const btns = document.querySelectorAll('.quiz-opt');
+    btns.forEach(b=>b.disabled = true);
+    if(i === item.a){
+      btns[i].classList.add('correct');
+      score++;
+    } else {
+      btns[i].classList.add('wrong');
+      btns[item.a].classList.add('correct');
+    }
+    document.getElementById('quizExplain').style.display='block';
+    document.getElementById('nextBtn').style.display='inline-block';
+    qScore.textContent = score;
+  }
+
+  function nextQuestion(){
+    cur++;
+    renderQuestion();
+  }
+  function restartQuiz(){
+    cur = 0; score = 0;
+    renderQuestion();
+  }
+  renderQuestion();
+  updateProgress();
+</script>
+</body>
+</html>
